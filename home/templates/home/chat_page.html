@@ -1,0 +1,848 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>Chat with AyurGenix AI - Personalized Ayurvedic Doctor</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, #ffe8d6, #ffd7ba);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background 0.3s;
+    }
+
+    body.dark-mode {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .chat-container {
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .dark-mode .chat-container {
+      background: #1e293b;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .chat-header {
+      background-color: #f59e0b;
+      color: white;
+      padding: 18px;
+      font-size: 1.25rem;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: background-color 0.3s;
+    }
+
+    .dark-mode .chat-header {
+      background-color: #e67e22;
+    }
+
+    .header-controls {
+      display: flex;
+      gap: 12px;
+      margin-left: auto;
+    }
+
+    .header-icon {
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      transition: all 0.2s;
+      padding: 6px;
+    }
+
+    .header-icon:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+
+    .dark-mode .header-icon:hover {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .chat-messages {
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      scroll-behavior: smooth;
+      transition: background-color 0.3s;
+    }
+
+    .dark-mode .chat-messages {
+      background-color: #1e293b;
+    }
+
+    .message-container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message-container.user {
+      align-items: flex-end;
+    }
+
+    .message-container.ai {
+      align-items: flex-start;
+    }
+
+    .message-bubble {
+      max-width: 75%;
+      padding: 14px 20px;
+      border-radius: 18px;
+      font-size: 1rem;
+      line-height: 1.5;
+      position: relative;
+      white-space: pre-wrap;
+      transition: all 0.3s;
+    }
+
+    .message-container.ai .message-bubble {
+      background-color: #f59e0b;
+      color: white;
+      border-bottom-left-radius: 4px;
+    }
+
+    .dark-mode .message-container.ai .message-bubble {
+      background-color: #e67e22;
+    }
+
+    .message-container.user .message-bubble {
+      background-color: #f3e9d2;
+      color: #334155;
+      border-bottom-right-radius: 4px;
+    }
+
+    .dark-mode .message-container.user .message-bubble {
+      background-color: #334155;
+      color: #e2e8f0;
+    }
+
+    .timestamp {
+      font-size: 0.75rem;
+      margin-top: 4px;
+      opacity: 0.7;
+      transition: color 0.3s;
+    }
+
+    .dark-mode .timestamp {
+      color: #94a3b8;
+    }
+
+    .chat-input-container {
+      display: flex;
+      padding: 16px;
+      background-color: #fff;
+      border-top: 1px solid #e5e7eb;
+      transition: all 0.3s;
+    }
+
+    .dark-mode .chat-input-container {
+      background-color: #1e293b;
+      border-top-color: #334155;
+    }
+
+    .chat-input {
+      flex-grow: 1;
+      padding: 12px 16px;
+      border-radius: 24px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      margin-right: 12px;
+      transition: all 0.3s ease;
+      resize: none;
+      height: 50px;
+      max-height: 150px;
+      overflow-y: auto;
+      background-color: #fffdf5;
+    }
+
+    .dark-mode .chat-input {
+      background-color: #334155;
+      color: #f8fafc;
+      border-color: #475569;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: #f59e0b;
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    }
+
+    .dark-mode .chat-input:focus {
+      border-color: #e67e22;
+      box-shadow: 0 0 0 2px rgba(230, 126, 34, 0.3);
+    }
+
+    .send-button {
+      background-color: #f59e0b;
+      color: white;
+      width: 50px;
+      height: 50px;
+      font-size: 1.25rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+    }
+
+    .dark-mode .send-button {
+      background-color: #e67e22;
+    }
+
+    .send-button:hover {
+      background-color: #e67e22;
+      transform: translateY(-2px);
+    }
+
+    .dark-mode .send-button:hover {
+      background-color: #d46a1a;
+    }
+
+    .send-button:disabled {
+      background-color: #d1d5db;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .dark-mode .send-button:disabled {
+      background-color: #475569;
+    }
+
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      padding: 10px 20px;
+      background-color: #f59e0b;
+      color: white;
+      border-radius: 18px;
+      border-bottom-left-radius: 4px;
+      margin-bottom: 8px;
+      align-self: flex-start;
+      font-size: 0.9rem;
+      transition: all 0.3s;
+    }
+
+    .dark-mode .typing-indicator {
+      background-color: #e67e22;
+    }
+
+    .typing-indicator span {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background-color: white;
+      border-radius: 50%;
+      margin-left: 5px;
+      animation: typing 1.5s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+      0%, 60%, 100% {
+        transform: translateY(0);
+      }
+      30% {
+        transform: translateY(-5px);
+      }
+    }
+
+    .status-bar {
+      text-align: center;
+      padding: 4px;
+      font-size: 0.8rem;
+      color: #64748b;
+      background-color: #f1f5f9;
+      transition: all 0.3s;
+    }
+
+    .dark-mode .status-bar {
+      background-color: #1e293b;
+      color: #94a3b8;
+    }
+
+    /* Message formatting */
+    .message-bubble ul, .message-bubble ol {
+      margin-left: 20px;
+      margin-top: 8px;
+      margin-bottom: 8px;
+    }
+
+    .message-bubble li {
+      margin-bottom: 4px;
+    }
+
+    .message-bubble p {
+      margin-bottom: 8px;
+    }
+
+    /* Scrollbar styling */
+    .chat-messages::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-messages::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      transition: background 0.3s;
+    }
+
+    .dark-mode .chat-messages::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb {
+      background: #d1d5db;
+      border-radius: 10px;
+      transition: background 0.3s;
+    }
+
+    .dark-mode .chat-messages::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+
+    .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #a3a3a3;
+    }
+
+    .dark-mode .chat-messages::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+
+    /* Function-specific styles */
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .action-button {
+      padding: 6px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .message-container.ai .action-button {
+      background-color: white;
+      color: #f59e0b;
+    }
+
+    .message-container.user .action-button {
+      background-color: #f59e0b;
+      color: white;
+    }
+
+    .dark-mode .message-container.ai .action-button {
+      background-color: #1e293b;
+      color: #e67e22;
+    }
+
+    .dark-mode .message-container.user .action-button {
+      background-color: #e67e22;
+      color: white;
+    }
+
+    .action-button:hover {
+      transform: translateY(-1px);
+      opacity: 0.9;
+    }
+
+    /* Code block styling */
+    .code-block {
+      background-color: rgba(0, 0, 0, 0.05);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.9rem;
+      margin: 8px 0;
+      overflow-x: auto;
+    }
+
+    .dark-mode .code-block {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Tooltip for icons */
+    .tooltip {
+      position: relative;
+    }
+
+    .tooltip::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      color: white;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      white-space: nowrap;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+      pointer-events: none;
+    }
+
+    .tooltip:hover::after {
+      opacity: 1;
+      visibility: visible;
+      bottom: calc(100% + 5px);
+    }
+
+    /* Loading spinner */
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+      display: inline-block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .message-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .message-action {
+      background: rgba(255, 255, 255, 0.2);
+      border: none;
+      border-radius: 12px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: white;
+    }
+    
+    .message-container.user .message-action {
+      background: rgba(245, 158, 11, 0.2);
+      color: #334155;
+    }
+    
+    .message-action:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+    
+    .message-container.user .message-action:hover {
+      background: rgba(245, 158, 11, 0.3);
+    }
+    
+    .connection-status {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 6px;
+    }
+    
+    .connected {
+      background-color: #10b981;
+    }
+    
+    .disconnected {
+      background-color: #ef4444;
+      animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="text-gray-800 body-font shadow-sm bg-white sticky top-0 z-50">
+    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+      <a href="{% url 'landing_page' %}" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full" viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+        <span class="ml-3 text-xl font-bold">AyurGenix AI</span>
+      </a>
+      <nav class="md:ml-auto flex flex-wrap items-center text-base justify-center">
+        <a href="{% url 'edit_profile' %}" class="mr-5 hover:text-gray-900">Edit Profile</a>
+        <a href="{% url 'logout' %}" class="mr-5 hover:text-gray-900">Logout</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <!-- Chat Container -->
+    <div class="chat-container">
+      <div class="chat-header">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+        </svg>
+        Chat with AyurGenix AI
+        <div class="header-controls">
+          <span class="header-icon" id="download-chat">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </span>
+          <span class="header-icon" id="minimize-chat">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </span>
+          <span class="header-icon" id="maximize-chat">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+            </svg>
+          </span>
+          <span class="header-icon" id="dark-mode-toggle">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+            </svg>
+          </span>
+        </div>
+      </div>
+
+
+      <div class="status-bar" id="status-bar">
+        Connected to AyurGenix AI
+      </div>
+
+      <div class="chat-messages" id="chat-messages">
+        <div class="message-container ai">
+          <div class="message-bubble">
+            Hello! I'm AyurGenix AI, your personalized Ayurvedic health assistant. How can I help you today?
+          </div>
+          <div class="timestamp">Just now</div>
+        </div>
+      </div>
+
+      <div class="chat-input-container">
+        <textarea 
+          class="chat-input" 
+          id="chat-input" 
+          placeholder="Type your message..." 
+          rows="1"
+          onkeydown="if(event.keyCode == 13 && !event.shiftKey) { event.preventDefault(); sendMessage(); }"></textarea>
+        <button class="send-button" id="send-button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-gray-600 body-font bg-white border-t border-gray-200">
+    <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+      <a href="{% url 'landing_page' %}" class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full" viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+        <span class="ml-3 text-xl">AyurGenix AI</span>
+      </a>
+      <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
+        © 2025 AyurGenix AI — All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    const sendButton = document.getElementById('send-button');
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const statusBar = document.getElementById('status-bar');
+    let isProcessing = false;
+
+    // Auto-resize textarea as user types
+    chatInput.addEventListener('input', function() {
+      this.style.height = 'auto';
+      this.style.height = (this.scrollHeight < 150) ? (this.scrollHeight) + 'px' : '150px';
+    });
+
+    // Function to format the current time
+    function formatTime() {
+      const now = new Date();
+      return now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+    }
+
+    // Create typing indicator
+    function createTypingIndicator() {
+      const typingIndicator = document.createElement('div');
+      typingIndicator.className = 'typing-indicator';
+      typingIndicator.innerHTML = 'AyurGenix is thinking<span></span><span></span><span></span>';
+      chatMessages.appendChild(typingIndicator);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      return typingIndicator;
+    }
+
+    // Remove typing indicator
+    function removeTypingIndicator(indicator) {
+      if (indicator && indicator.parentNode) {
+        indicator.parentNode.removeChild(indicator);
+      }
+    }
+
+    async function sendMessage() {
+      const userMessage = chatInput.value.trim();
+      if (!userMessage || isProcessing) return;
+
+      isProcessing = true;
+      sendButton.disabled = true;
+      statusBar.textContent = "Processing your message...";
+
+      // Display the user's message
+      const userContainer = document.createElement('div');
+      userContainer.classList.add('message-container', 'user');
+      
+      const userBubble = document.createElement('div');
+      userBubble.classList.add('message-bubble');
+      userBubble.textContent = userMessage;
+      
+      const timestamp = document.createElement('div');
+      timestamp.classList.add('timestamp');
+      timestamp.textContent = formatTime();
+      
+      userContainer.appendChild(userBubble);
+      userContainer.appendChild(timestamp);
+      chatMessages.appendChild(userContainer);
+      
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+      chatInput.value = '';
+      chatInput.style.height = '50px'; // Reset textarea height
+      
+      // Create typing indicator
+      const typingIndicator = createTypingIndicator();
+
+      try {
+        // Send user message to the backend for processing
+        const response = await fetch("{% url 'chat_api' %}", {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        const data = await response.json();
+        removeTypingIndicator(typingIndicator);
+        
+        if (data.ai_response) {
+          const aiContainer = document.createElement('div');
+          aiContainer.classList.add('message-container', 'ai');
+          
+          const aiBubble = document.createElement('div');
+          aiBubble.classList.add('message-bubble');
+          aiBubble.textContent = data.ai_response;
+          
+          const timestamp = document.createElement('div');
+          timestamp.classList.add('timestamp');
+          timestamp.textContent = formatTime();
+          
+          aiContainer.appendChild(aiBubble);
+          aiContainer.appendChild(timestamp);
+          
+          // Add message actions
+          const actions = document.createElement('div');
+          actions.className = 'message-actions';
+          
+          const copyBtn = document.createElement('button');
+          copyBtn.className = 'message-action';
+          copyBtn.textContent = 'Copy';
+          copyBtn.onclick = () => {
+            navigator.clipboard.writeText(data.ai_response);
+            copyBtn.textContent = 'Copied!';
+            setTimeout(() => copyBtn.textContent = 'Copy', 2000);
+          };
+          
+          const saveBtn = document.createElement('button');
+          saveBtn.className = 'message-action';
+          saveBtn.textContent = 'Save';
+          saveBtn.onclick = () => {
+            saveImportantMessage(data.ai_response);
+            saveBtn.textContent = 'Saved!';
+            setTimeout(() => saveBtn.textContent = 'Save', 2000);
+          };
+          
+          actions.appendChild(copyBtn);
+          actions.appendChild(saveBtn);
+          aiContainer.appendChild(actions);
+          
+          chatMessages.appendChild(aiContainer);
+          
+          chatMessages.scrollTop = chatMessages.scrollHeight;
+          statusBar.textContent = "Connected to AyurGenix AI";
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        removeTypingIndicator(typingIndicator);
+        
+        const errorContainer = document.createElement('div');
+        errorContainer.classList.add('message-container', 'ai');
+        
+        const errorBubble = document.createElement('div');
+        errorBubble.classList.add('message-bubble');
+        errorBubble.style.backgroundColor = "#ef4444";
+        errorBubble.textContent = "Sorry, I encountered an error. Please try again later.";
+        
+        errorContainer.appendChild(errorBubble);
+        chatMessages.appendChild(errorContainer);
+        
+        statusBar.textContent = "Connection error. Please try again.";
+      } finally {
+        isProcessing = false;
+        sendButton.disabled = false;
+        chatInput.focus();
+      }
+    }
+
+    // Save important messages to localStorage
+    function saveImportantMessage(message) {
+      const savedMessages = JSON.parse(localStorage.getItem('savedMessages') || '[]');
+      savedMessages.push({
+        message,
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('savedMessages', JSON.stringify(savedMessages));
+    }
+
+    sendButton.addEventListener('click', sendMessage);
+    
+    // Focus input field when page loads
+    window.onload = function() {
+      chatInput.focus();
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    };
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    darkModeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark-mode');
+      localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+    });
+
+    // Initialize dark mode from localStorage
+    if (localStorage.getItem('darkMode') === 'true') {
+      document.body.classList.add('dark-mode');
+    }
+
+    // Minimize/Maximize Chat
+    const minimizeChat = document.getElementById('minimize-chat');
+    const maximizeChat = document.getElementById('maximize-chat');
+    const chatContainer = document.querySelector('.chat-container');
+
+    minimizeChat.addEventListener('click', () => {
+      chatContainer.style.height = '60px';
+      chatContainer.style.overflow = 'hidden';
+      minimizeChat.style.display = 'none';
+      maximizeChat.style.display = 'flex';
+    });
+
+    maximizeChat.addEventListener('click', () => {
+      chatContainer.style.height = '80vh';
+      chatContainer.style.overflow = '';
+      maximizeChat.style.display = 'none';
+      minimizeChat.style.display = 'flex';
+    });
+
+    // Initially hide the maximize button
+    maximizeChat.style.display = 'none';
+
+    // Download Chat
+    document.getElementById('download-chat').addEventListener('click', () => {
+      const chatContent = document.getElementById('chat-messages').innerText;
+      const blob = new Blob([chatContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `AyurGenix-Chat-${new Date().toISOString().split('T')[0]}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+
+    // Connection status monitoring
+    function checkConnection() {
+      const statusIndicator = document.createElement('span');
+      statusIndicator.className = 'connection-status connected';
+      statusBar.prepend(statusIndicator);
+      
+      // Simulate connection check
+      setInterval(() => {
+        const isOnline = navigator.onLine;
+        statusIndicator.className = `connection-status ${isOnline ? 'connected' : 'disconnected'}`;
+        if (!isOnline) {
+          statusBar.textContent = " Offline - Trying to reconnect...";
+        } else {
+          statusBar.textContent = " Connected to AyurGenix AI";
+        }
+      }, 5000);
+    }
+
+    // Initialize connection monitoring
+    checkConnection();
+  </script>
+</body>
+</html>

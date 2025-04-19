@@ -1,0 +1,107 @@
+/* Reset some default styles */
+body, h1, h2, p, ul, li {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body styling */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+}
+
+/* Header styling */
+header {
+    background: #333;
+    color: #fff;
+    padding: 1rem 0;
+    text-align: center;
+}
+
+header nav ul {
+    list-style: none;
+    display: flex;
+    justify-content: center;
+}
+
+header nav ul li {
+    margin: 0 1rem;
+}
+
+header nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* Hero section styling */
+.hero {
+    background: url('path_to_your_image.jpg') no-repeat center center/cover;
+    color: #fff;
+    text-align: center;
+    padding: 5rem 0;
+}
+
+.hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.hero h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.btn {
+    display: inline-block;
+    padding: 0.7rem 1.5rem;
+    background: #ff6347;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.btn:hover {
+    background: #ff4500;
+}
+
+/* Features section styling */
+.features {
+    display: flex;
+    justify-content: space-around;
+    padding: 2rem 0;
+    background: #f4f4f4;
+}
+
+.feature {
+    text-align: center;
+    padding: 1rem;
+    flex: 1;
+}
+
+.feature h2 {
+    margin-bottom: 1rem;
+}
+
+.feature p {
+    font-size: 1rem;
+}
+
+/* Footer styling */
+footer {
+    background: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1rem 0;
+    position: fixed;
+    width: 100%;
+    bottom: 0;
+}

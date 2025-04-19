@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <title>About Us - AyurGenix AI</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #f7fafc;
+      background-image: radial-gradient(circle at top left, rgba(247, 182, 69, 0.2), rgba(241, 195, 115, 0.1));
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+    
+    .nav-link {
+      position: relative;
+    }
+    
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -2px;
+      left: 0;
+      background-color: #F59E0B;
+      transition: width 0.3s ease-in-out;
+    }
+    
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .btn-primary {
+      background-color: #f59e0b;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: #e67e22;
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: #ffffff;
+      color: #3b3b3b;
+      border: 1px solid #e5e7eb;
+      padding: 12px 24px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 600;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f3f4f6;
+      transform: translateY(-2px);
+    }
+
+    .timeline-container {
+      position: relative;
+      padding-left: 40px;
+    }
+
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      left: 15px;
+      top: 0;
+      height: 100%;
+      width: 2px;
+      background-color: #F59E0B;
+    }
+
+    .timeline-point {
+      position: absolute;
+      left: 8px;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background-color: #F59E0B;
+    }
+
+    .team-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .team-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .value-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .value-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    }
+  </style>
+</head>
+<body>
+  <!-- Emergency Notice -->
+  <div class="bg-red-50 p-2">
+    <div class="container mx-auto text-center text-red-700 text-sm">
+      <strong>Emergency?</strong> Call 108/102 immediately. This is not a substitute for emergency medical care.
+    </div>
+  </div>
+
+  <!-- Header -->
+  <header class="text-gray-800 body-font shadow-sm bg-white sticky top-0 z-50">
+    <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+      <a href="{% url 'landing_page' %}" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full" viewBox="0 0 24 24">
+          <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+        </svg>
+        <span class="ml-3 text-xl font-bold">AyurGenix AI</span>
+      </a>
+      
+      <!-- Main Menu -->
+      <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+        <a href="{% url 'landing_page' %}" class="mr-5 hover:text-yellow-600">Home</a>
+        
+        <div class="dropdown relative group mr-5">
+          <button id="dropdown-button" class="hover:text-yellow-600 flex items-center">
+            Services
+            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          
+          <!-- Dropdown menu -->
+          <div id="dropdown-menu" class="dropdown-menu hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+            <a href="chat_page.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">AI Consultation</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">Ayurvedic Remedies</a>
+            <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">Health Tracker</a>
+          </div>
+        </div>
+        
+        <script>
+          // Get the dropdown button and menu elements
+          const dropdownButton = document.getElementById('dropdown-button');
+          const dropdownMenu = document.getElementById('dropdown-menu');
+        
+          // Toggle the dropdown menu when clicking the button
+          dropdownButton.addEventListener('click', function (event) {
+            event.preventDefault(); // Prevents immediate closing due to link behavior
+            dropdownMenu.classList.toggle('hidden'); // Toggle the 'hidden' class
+          });
+        
+          // Close dropdown if clicked outside
+          document.addEventListener('click', function (e) {
+            if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+              dropdownMenu.classList.add('hidden');
+            }
+          });
+        </script>
+        
+        <a href="{% url 'about' %}" class="mr-5 text-yellow-600 font-semibold">About</a>
+        <a href="#contact" class="mr-5 hover:text-yellow-600">Contact</a>
+      </nav>
+
+      <!-- Auth Buttons -->
+      <div class="flex items-center">
+        <a href="{% url 'login' %}" class="mr-5 hover:text-yellow-600">Login</a>
+        <a href="{% url 'register' %}" class="inline-flex items-center bg-yellow-500 border-0 py-2 px-4 focus:outline-none hover:bg-yellow-600 rounded text-base mt-4 md:mt-0 text-white font-semibold">
+          Get Started
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- About Hero Section -->
+  <section class="text-gray-800 body-font">
+    <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
+      <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center">
+        <h1 class="title-font sm:text-5xl text-4xl mb-4 font-bold text-gray-900">
+          About AyurGenix AI
+        </h1>
+        <p class="mb-8 leading-relaxed text-gray-700">
+          AyurGenix AI is revolutionizing healthcare by bridging the ancient wisdom of Ayurveda with modern artificial intelligence technology. Our platform offers personalized health insights and natural remedy suggestions based on your unique constitution, helping you achieve optimal wellness through time-tested Ayurvedic principles.
+        </p>
+        <div class="flex justify-center">
+          <a href="#mission" class="btn-primary">Our Mission</a>
+          <a href="#team" class="ml-4 btn-secondary">Meet Our Team</a>
+        </div>
+      </div>
+      <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6">
+        <img class="object-cover object-center rounded-lg shadow-lg" alt="about-hero" src="https://www.shivaniayurveda.com/wp-content/uploads/2021/02/ayurveda.png" />
+      </div>
+    </div>
+  </section>
+
+  <!-- Medical Disclaimer -->
+  <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mx-auto max-w-4xl my-8">
+    <p class="text-center text-yellow-800">
+      AyurGenix AI provides general Ayurvedic wellness information. Always consult qualified healthcare professionals for medical advice, diagnosis, or treatment.
+    </p>
+  </div>
+
+  <!-- Our Mission Section -->
+  <section id="mission" class="text-gray-800 body-font py-12">
+    <div class="container px-5 py-12 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h2 class="text-3xl font-bold mb-4">Our Mission & Vision</h2>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+          We are dedicated to making traditional Ayurvedic knowledge accessible and applicable to modern lifestyles, empowering individuals to take control of their health naturally.
+        </p>
+      </div>
+      <div class="flex flex-wrap -m-4">
+        <div class="p-4 lg:w-1/2">
+          <div class="value-card h-full p-8 rounded-lg">
+            <div class="text-yellow-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-semibold mb-4">Our Mission</h3>
+            <p class="text-gray-700 leading-relaxed">
+              To democratize access to Ayurvedic wisdom through technology, making personalized holistic health solutions accessible to everyone, everywhere. We aim to bridge the gap between ancient wellness practices and modern lifestyles, empowering individuals to make informed health decisions.
+            </p>
+          </div>
+        </div>
+        <div class="p-4 lg:w-1/2">
+          <div class="value-card h-full p-8 rounded-lg">
+            <div class="text-yellow-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+              </svg>
+            </div>
+            <h3 class="text-2xl font-semibold mb-4">Our Vision</h3>
+            <p class="text-gray-700 leading-relaxed">
+              We envision a world where preventive healthcare is prioritized, and where the timeless principles of Ayurveda work in harmony with modern medical science. Our goal is to create a global wellness ecosystem where AI-enhanced traditional knowledge helps people lead balanced, healthy lives according to their unique constitutions.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Values Section -->
+  <section class="text-gray-800 body-font bg-white py-12">
+    <div class="container px-5 py-12 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h2 class="text-3xl font-bold mb-4">Our Core Values</h2>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+          These principles guide everything we do at AyurGenix AI
+        </p>
+      </div>
+      <div class="flex flex-wrap -m-4">
+        <div class="p-4 md:w-1/3">
+          <div class="value-card h-full p-6">
+            <div class="text-yellow-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Authenticity</h3>
+            <p class="text-gray-700">We are committed to preserving and accurately representing the authentic principles of Ayurveda while making them accessible in modern context.</p>
+          </div>
+        </div>
+        <div class="p-4 md:w-1/3">
+          <div class="value-card h-full p-6">
+            <div class="text-yellow-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Personalization</h3>
+            <p class="text-gray-700">We recognize that each individual is unique, with their own specific constitution (Prakriti) and imbalances (Vikriti), requiring personalized approaches to wellness.</p>
+          </div>
+        </div>
+        <div class="p-4 md:w-1/3">
+          <div class="value-card h-full p-6">
+            <div class="text-yellow-500 mb-4">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold mb-2">Innovation</h3>
+            <p class="text-gray-700">We continuously strive to enhance our AI technology to make ancient wisdom more accessible, understandable, and applicable in today's fast-paced world.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story Timeline -->
+  <section class="text-gray-800 body-font py-12">
+    <div class="container px-5 py-12 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h2 class="text-3xl font-bold mb-4">Our Journey</h2>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+          The evolution of AyurGenix AI from concept to reality
+        </p>
+      </div>
+      
+      <section class="timeline-section bg-gray-100 py-8">
+        <div class="container mx-auto px-6">
+          
+          <div class="timeline-container py-4 mb-4">
+            <div class="timeline-point mt-6"></div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-xl font-bold mb-2">July 2024 - Idea & Research</h3>
+              <p class="text-gray-700">
+                A group of undergraduate students passionate about AI and Ayurveda came together with a shared vision—leveraging technology to make personalized Ayurvedic wellness more accessible. Initial research began, exploring existing AI models and Ayurvedic principles.
+              </p>
+            </div>
+          </div>
+      
+          <div class="timeline-container py-4 mb-4">
+            <div class="timeline-point mt-6"></div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-xl font-bold mb-2">October 2024 - Prototyping & Dataset Formation</h3>
+              <p class="text-gray-700">
+                The team developed the first prototype, selecting relevant datasets and fine-tuning models. The focus was on curating a structured Ayurvedic database and exploring different AI techniques for diagnosis and recommendation systems.
+              </p>
+            </div>
+          </div>
+      
+          <div class="timeline-container py-4 mb-4">
+            <div class="timeline-point mt-6"></div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-xl font-bold mb-2">December 2024 - First AI Prototype</h3>
+              <p class="text-gray-700">
+                The first working version was built using an ensemble approach, integrating Random Forest, XGBoost, Decision Tree, and other Scikit-Learn frameworks. The model demonstrated promising results in Ayurvedic diagnosis and recommendations.
+              </p>
+            </div>
+          </div>
+      
+          <div class="timeline-container py-4 mb-4">
+            <div class="timeline-point mt-6"></div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-xl font-bold mb-2">January 2025 - Transition to LLaMA 3.1 & PostgreSQL</h3>
+              <p class="text-gray-700">
+                To improve accuracy and efficiency, the project transitioned to the LLaMA 3.1 1B model for better natural language understanding. PostgreSQL was integrated as the backend database to handle structured Ayurvedic knowledge and user interactions efficiently.
+              </p>
+            </div>
+          </div>
+      
+          <div class="timeline-container py-4">
+            <div class="timeline-point mt-6"></div>
+            <div class="bg-white p-6 rounded-lg shadow">
+              <h3 class="text-xl font-bold mb-2">February 2025 - Stable Model & Public Release</h3>
+              <p class="text-gray-700">
+                After rigorous testing and improvements, the model reached a stable version, ready for public use. AyurGenix AI is now avaiable, providing personalized Ayurvedic recommendations powered by AI-driven insights.
+              </p>
+            </div>
+          </div>
+      
+        </div>
+      </section>
+      
+
+  <!-- Team Section -->
+  <section id="team" class="text-gray-800 body-font bg-white py-12">
+    <div class="container px-5 py-12 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h2 class="text-3xl font-bold mb-4">Meet Our Expert Team</h2>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+          Our team combines expertise in Ayurveda, artificial intelligence, and full-stack development.
+        </p>
+      </div>
+  
+      <div class="flex flex-nowrap justify-center -m-4 overflow-x-auto">
+        
+        <div class="p-4 w-1/4 min-w-[250px]">
+          <div class="team-card h-full flex flex-col items-center text-center p-6">
+            <img alt="team" class="flex-shrink-0 rounded-full w-32 h-32 object-cover object-center mb-4" src="/api/placeholder/150/150">
+            <div class="w-full">
+              <h3 class="text-lg font-semibold mb-1">Kirti Rane</h3>
+              <p class="text-yellow-500 mb-3">Data & Research Lead</p>
+              <p class="text-gray-600 text-sm">Led dataset formation, preprocessing, and curation. Integrated Ayurvedic data with LLM.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-4 w-1/4 min-w-[250px]">
+          <div class="team-card h-full flex flex-col items-center text-center p-6">
+            <img alt="team" class="flex-shrink-0 rounded-full w-32 h-32 object-cover object-center mb-4" src="/api/placeholder/150/150">
+            <div class="w-full">
+              <h3 class="text-lg font-semibold mb-1">Nikita Yadav</h3>
+              <p class="text-yellow-500 mb-3">AI & Model Optimization</p>
+              <p class="text-gray-600 text-sm">Fine-tuned LLaMA 3.1 1B, improved accuracy & reliability. Integrated AI with datasets.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-4 w-1/4 min-w-[250px]">
+          <div class="team-card h-full flex flex-col items-center text-center p-6">
+            <img alt="team" class="flex-shrink-0 rounded-full w-32 h-32 object-cover object-center mb-4" src="/api/placeholder/150/150">
+            <div class="w-full">
+              <h3 class="text-lg font-semibold mb-1">Yadnesh Bhanushali</h3>
+              <p class="text-yellow-500 mb-3">Python Dev & LLM Researcher</p>
+              <p class="text-gray-600 text-sm">Built front-end in Django, developed PostgreSQL backend, and worked on end-to-end integration.</p>
+            </div>
+          </div>
+        </div>
+  
+        <div class="p-4 w-1/4 min-w-[250px]">
+          <div class="team-card h-full flex flex-col items-center text-center p-6">
+            <img alt="team" class="flex-shrink-0 rounded-full w-32 h-32 object-cover object-center mb-4" src="/api/placeholder/150/150">
+            <div class="w-full">
+              <h3 class="text-lg font-semibold mb-1">Dr. Preeti Jain</h3>
+              <p class="text-yellow-500 mb-3">Advisor</p>
+              <p class="text-gray-600 text-sm">Board-certified professor at University of Mumbai.</p>
+            </div>
+          </div>
+        </div>
+  
+      </div>
+    </div>
+  </section>
+  
+
+  <!-- Testimonials Section -->
+  <section class="text-gray-800 body-font py-12">
+    <div class="container px-5 py-12 mx-auto">
+      <div class="flex flex-col text-center w-full mb-12">
+        <h2 class="text-3xl font-bold mb-4">What Our Users Say</h2>
+        <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
+          Real stories from people who have experienced the benefits of AyurGenix AI
+        </p>
+      </div>
+      
+      <div class="flex flex-wrap -m-4">
+        <div class="p-4 md:w-1/3">
+          <div class="h-full bg-white p-8 rounded-lg shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="block w-5 h-5 text-yellow-500 mb-4" viewBox="0 0 975.036 975.036">
+              <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.899-159.6 30.899-277.5v-239c0-27.6-22.399-50-50-50h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.4 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l35.9 75.8c11.601 24.399 40.501 35.2 65.301 24.399z"></path>
+            </svg>
+            <p class="leading-relaxed mb-6">After years of struggling with digestive issues, AyurGenix AI recommended simple dietary changes and herbs specific to my body type. Within weeks, I noticed significant improvement. The personalized approach makes all the difference.</p>
+            <div class="inline-flex items-center">
+              <img alt="testimonial" src="/api/placeholder/96/96" class="w-12 h-12 rounded-full flex-shrink-0 object-cover object-center">
+              <span class="flex-grow flex flex-col pl-4">
+                <span class="title-font font-medium text-gray-900">Anita K.</span>
+              </span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="p-4 md:w-1/3">
+          <div class="h-full bg-white p-8 rounded-lg shadow">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="block w-5 h-5 text-yellow-500 mb-4" viewBox="0 0 975.036 975.036">
+              <path d="M925.036 57.197h-304c-27.6 0-50 22.4-50 50v304c0 27.601 22.4 50 50 50h145.5c-1.9 79.601-20.4 143.3-55.4 191.2-27.6 37.8-69.399 69.1-125.3 93.8-25.7 11.3-36.8 41.7-24.8 67.101l36 76c11.6 24.399 40.3 35.1 65.1 24.399 66.2-28.6 122.101-64.8 167.7-108.8 55.601-53.7 93.7-114.3 114.3-181.9 20.601-67.6 30.9-159.8 30.9-276.8v-239c0-27.599-22.401-50-50-50zM106.036 913.497c65.4-28.5 121-64.699 166.9-108.6 56.1-53.7 94.4-114.1 115-181.2 20.6-67.1 30.

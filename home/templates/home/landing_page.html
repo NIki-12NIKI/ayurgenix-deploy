@@ -1,0 +1,518 @@
+  <!doctype html>
+  <html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>AyurGenix AI</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Inter', sans-serif;
+        background-color: #f7fafc;
+        background-image: radial-gradient(circle at top left, rgba(247, 182, 69, 0.2), rgba(241, 195, 115, 0.1));
+      }
+
+      .dropdown:hover .dropdown-menu {
+        display: block;
+      }
+      
+      .nav-link {
+        position: relative;
+      }
+      
+      .nav-link::after {
+        content: '';
+        position: absolute;
+        width: 0;
+        height: 2px;
+        bottom: -2px;
+        left: 0;
+        background-color: #F59E0B;
+        transition: width 0.3s ease-in-out;
+      }
+      
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .btn-primary {
+        background-color: #f59e0b;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .btn-primary:hover {
+        background-color: #e67e22;
+        transform: translateY(-2px);
+      }
+
+      .btn-secondary {
+        background-color: #ffffff;
+        color: #3b3b3b;
+        border: 1px solid #e5e7eb;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+
+      .btn-secondary:hover {
+        background-color: #f3f4f6;
+        transform: translateY(-2px);
+      }
+
+      .hero-section {
+        background: linear-gradient(135deg, rgba(247, 182, 69, 0.1), rgba(241, 195, 115, 0.1));
+        border-radius: 20px;
+        margin: 20px;
+        padding: 40px;
+      }
+
+      .feature-card {
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Emergency Notice -->
+    <div class="bg-red-50 p-2">
+      <div class="container mx-auto text-center text-red-700 text-sm">
+        <strong>Emergency?</strong> Call 108/102 immediately. This is not a substitute for emergency medical care.
+      </div>
+    </div>
+
+    <!-- Header -->
+    <header class="text-gray-800 body-font shadow-sm bg-white sticky top-0 z-50">
+      <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
+        <a href="{% url 'landing_page' %}" class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          </svg>
+          <span class="ml-3 text-xl font-bold">AyurGenix AI</span>
+        </a>
+        
+        <!-- Main Menu -->
+        <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
+          <a href="{% url 'landing_page' %}" class="mr-5 hover:text-yellow-600">Home</a>
+          
+          <div class="dropdown relative group mr-5">
+            <button id="dropdown-button" class="hover:text-yellow-600 flex items-center">
+              Services
+              <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            
+            <!-- Dropdown menu -->
+            <div id="dropdown-menu" class="dropdown-menu hidden absolute left-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50">
+              <a href="{% url 'chat_page' %}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">AI Consultation</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">Ayurvedic Remedies</a>
+              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-yellow-50">Health Tracker</a>
+            </div>
+          </div>
+          
+          <script>
+            // Get the dropdown button and menu elements
+            const dropdownButton = document.getElementById('dropdown-button');
+            const dropdownMenu = document.getElementById('dropdown-menu');
+          
+            // Toggle the dropdown menu when clicking the button
+            dropdownButton.addEventListener('click', function (event) {
+              event.preventDefault(); // Prevents immediate closing due to link behavior
+              dropdownMenu.classList.toggle('hidden'); // Toggle the 'hidden' class
+            });
+          
+            // Close dropdown if clicked outside
+            document.addEventListener('click', function (e) {
+              if (!dropdownButton.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+              }
+            });
+          </script>
+          
+          <a href="{% url 'about' %}" class="mr-5 hover:text-yellow-600">About</a>
+          <a href="#contact" class="mr-5 hover:text-yellow-600">Contact</a>
+        </nav>
+
+        <!-- Auth Buttons -->
+        <div class="flex items-center">
+          <a href="{% url 'login' %}" class="mr-5 hover:text-yellow-600">Login</a>
+          <a href="{% url 'register' %}" class="inline-flex items-center bg-yellow-500 border-0 py-2 px-4 focus:outline-none hover:bg-yellow-600 rounded text-base mt-4 md:mt-0 text-white font-semibold">
+            Get Started
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero Section -->
+<!-- Updated Hero Section -->
+<section class="text-gray-800 body-font bg-gradient-to-r from-yellow-50 to-amber-50">
+  <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
+    <div class="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left items-center text-center">
+      <h1 class="title-font sm:text-5xl text-4xl mb-4 font-bold text-gray-900">
+        Ancient Wisdom, <br class="hidden lg:inline-block">Modern Healing
+      </h1>
+      <p class="mb-8 leading-relaxed text-gray-700">
+        Discover your unique Ayurvedic constitution and receive personalized health recommendations powered by AI. Our intelligent system combines 5,000 years of Ayurvedic knowledge with cutting-edge technology.
+      </p>
+      <div class="flex flex-col sm:flex-row justify-center gap-4 w-full">
+        <a href="{% url 'register' %}" class="btn-primary flex items-center justify-center">
+          Start Your Wellness Journey
+          <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-2" viewBox="0 0 24 24">
+            <path d="M5 12h14M12 5l7 7-7 7"></path>
+          </svg>
+        </a>
+        <a href="#how-it-works" class="btn-secondary flex items-center justify-center">
+          How It Works
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </a>
+      </div>
+    </div>
+    <div class="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 mb-10 md:mb-0">
+      <img class="object-cover object-center rounded-lg shadow-xl border-4 border-white" 
+           alt="Ayurvedic consultation" 
+           src="https://www.ppsu.ac.in/ayurvedic/img/ayurveda-why.jpeg">
+    </div>
+  </div>
+</section>
+
+<!-- How It Works Section (to link from the secondary button) -->
+<section id="how-it-works" class="text-gray-800 body-font py-12 bg-white">
+  <div class="container mx-auto px-5">
+    <h2 class="text-3xl font-bold text-center mb-12">How AyurGenix AI Works</h2>
+    <div class="flex flex-wrap -m-4">
+      <!-- Step 1 -->
+      <div class="p-4 md:w-1/3">
+        <div class="h-full p-6 rounded-lg border-2 border-yellow-100 bg-yellow-50">
+          <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-yellow-100 text-yellow-500 mb-4">
+            <span class="font-bold">1</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Complete Your Profile</h3>
+          <p class="text-gray-700">Tell us about your health history, lifestyle, and current concerns through our simple questionnaire.</p>
+        </div>
+      </div>
+      <!-- Step 2 -->
+      <div class="p-4 md:w-1/3">
+        <div class="h-full p-6 rounded-lg border-2 border-yellow-100 bg-yellow-50">
+          <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-yellow-100 text-yellow-500 mb-4">
+            <span class="font-bold">2</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">AI Analysis</h3>
+          <p class="text-gray-700">Our system analyzes your inputs using Ayurvedic principles to determine your dosha balance.</p>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div class="p-4 md:w-1/3">
+        <div class="h-full p-6 rounded-lg border-2 border-yellow-100 bg-yellow-50">
+          <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-yellow-100 text-yellow-500 mb-4">
+            <span class="font-bold">3</span>
+          </div>
+          <h3 class="text-xl font-bold mb-2">Personalized Recommendations</h3>
+          <p class="text-gray-700">Receive customized diet, lifestyle, and herbal suggestions tailored to your unique constitution.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+    <!-- Medical Disclaimer -->
+    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mx-auto max-w-4xl my-8">
+      <p class="text-center text-yellow-800">
+        AyurGenix AI provides general Ayurvedic wellness information. Always consult qualified healthcare professionals for medical advice, diagnosis, or treatment.
+      </p>
+    </div>
+
+    <!-- Features Section -->
+    <section id="features" class="text-gray-800 body-font bg-white py-12">
+      <div class="container mx-auto px-5">
+        <h2 class="text-3xl font-bold text-center mb-8">Why Choose AyurGenix AI?</h2>
+        <div class="flex flex-wrap -m-4">
+          <div class="p-4 md:w-1/3">
+            <div class="feature-card p-6 h-full">
+              <div class="text-yellow-500 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-2">Personalized Health Solutions</h3>
+              <p class="text-gray-700">Get tailored Ayurvedic recommendations based on your unique health profile and symptoms.</p>
+            </div>
+          </div>
+          <div class="p-4 md:w-1/3">
+            <div class="feature-card p-6 h-full">
+              <div class="text-yellow-500 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-2">AI-Powered Insights</h3>
+              <p class="text-gray-700">Advanced AI technology analyzes your symptoms and suggests appropriate Ayurvedic remedies.</p>
+            </div>
+          </div>
+          <div class="p-4 md:w-1/3">
+            <div class="feature-card p-6 h-full">
+              <div class="text-yellow-500 mb-4">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 class="text-xl font-bold mb-2">24/7 Accessibility</h3>
+              <p class="text-gray-700">Access your personalized health assistant anytime, anywhere with our easy-to-use platform.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Feel Free to Contact Section -->
+    <section id="contact" class="text-gray-800 body-font py-12 bg-gray-50">
+      <div class="container mx-auto text-center px-4">
+        <h2 class="text-3xl font-bold mb-8">Contact Our Team</h2>
+        <p class="text-lg text-gray-600 mb-12">Your message will be sent directly to: <span id="selectedRecipient" class="font-semibold text-yellow-600">support@ayurgenix.com</span></p>
+       
+        <!-- Contact Form -->
+        <div class="flex justify-center">
+          <div class="w-full md:w-1/2 bg-white p-8 rounded-lg shadow-md">
+            <form id="contactForm" class="text-left">
+              <!-- Recipient Selection -->
+              <div class="mb-6">
+                <label class="block text-gray-700 mb-4">Select Department:</label>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="recipient-option">
+                    <input id="support-team" type="radio" name="recipient" value="ai.42.kirti.rane@gmail.com" class="hidden peer" checked>
+                    <label for="support-team" class="flex flex-col items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-yellow-500 peer-checked:bg-yellow-50">
+                      <span class="bg-yellow-100 text-yellow-800 p-3 rounded-full mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z" clip-rule="evenodd" />
+                        </svg>
+                      </span>
+                      <h3 class="font-medium text-lg">Support Team</h3>
+                      <p class="text-sm text-gray-500">support@ayurgenix.com</p>
+                      <p class="text-sm mt-2 text-gray-600">For general inquiries and assistance</p>
+                    </label>
+                  </div>
+                 
+                  <div class="recipient-option">
+                    <input id="medical-team" type="radio" name="recipient" value="medical@ayurgenix.com" class="hidden peer">
+                    <label for="medical-team" class="flex flex-col items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer peer-checked:border-yellow-500 peer-checked:bg-yellow-50">
+                      <span class="bg-green-100 text-green-800 p-3 rounded-full mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                        </svg>
+                      </span>
+                      <h3 class="font-medium text-lg">Medical Team</h3>
+                      <p class="text-sm text-gray-500">medical@ayurgenix.com</p>
+                      <p class="text-sm mt-2 text-gray-600">For health-related questions</p>
+                    </label>
+                  </div>
+                </div>
+              </div>
+  
+              <!-- Form Fields -->
+              <div class="mb-4">
+                <label for="name" class="block text-gray-700 mb-2">Full Name</label>
+                <input type="text" id="name" name="name" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" placeholder="Enter your full name" required>
+              </div>
+  
+              <div class="mb-4">
+                <label for="email" class="block text-gray-700 mb-2">Your Email Address</label>
+                <input type="email" id="email" name="email" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" placeholder="Enter your email" required>
+              </div>
+  
+              <div class="mb-6">
+                <label for="message" class="block text-gray-700 mb-2">Your Message</label>
+                <textarea id="message" name="message" class="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500" rows="4" placeholder="Enter your message" required></textarea>
+              </div>
+  
+              <button type="submit" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-3 px-4 rounded-lg transition duration-300 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                  <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                </svg>
+                Send Message
+              </button>
+             
+              <!-- Status Message -->
+              <div id="formStatus" class="mt-4 p-4 rounded-lg hidden"></div>
+             
+              <!-- Contact Information -->
+              <div class="mt-8 pt-6 border-t border-gray-200">
+                <h3 class="font-medium text-gray-700 mb-3">Our Contact Details</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                  <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500 mt-1 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+                      <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+                    </svg>
+                    <div>
+                      <p class="font-medium">Support Team</p>
+                      <p class="text-gray-600">support@ayurgenix.com</p>
+                    </div>
+                  </div>
+                  <div class="flex items-start">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-1 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                    </svg>
+                    <div>
+                      <p class="font-medium">Medical Team</p>
+                      <p class="text-gray-600">medical@ayurgenix.com</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <script>
+      // Update displayed recipient when selection changes
+      const recipientRadios = document.querySelectorAll('input[name="recipient"]');
+      const recipientDisplay = document.getElementById('selectedRecipient');
+     
+      recipientRadios.forEach(radio => {
+        radio.addEventListener('change', () => {
+          if (radio.checked) {
+            recipientDisplay.textContent = radio.value;
+          }
+        });
+      });
+  
+      // Form submission
+      document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+       
+        const form = e.target;
+        const formData = new FormData(form);
+        const submitButton = form.querySelector('button[type="submit"]');
+        const statusElement = document.getElementById('formStatus');
+        const recipientEmail = formData.get('recipient');
+       
+        // Show loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+          <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+          Sending...
+        `;
+       
+        statusElement.classList.add('hidden');
+       
+        try {
+          // Simulate API call
+          await new Promise(resolve => setTimeout(resolve, 1500));
+         
+          // In a real implementation, you would:
+          // 1. Send the form data to your backend
+          // 2. Have your backend actually send the email
+          // 3. Handle the response properly
+         
+          // For demo purposes, we'll show a success message but note it's a simulation
+          statusElement.innerHTML = `
+            <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+                </svg>
+                <p>
+                  <strong>Message successfully sent to ${recipientEmail}</strong><br>
+                  <span class="text-sm">(Note: This is a simulation. In a real implementation, this would send to ${recipientEmail})</span>
+                </p>
+              </div>
+            </div>
+          `;
+          statusElement.classList.remove('hidden');
+         
+          // Reset form
+          form.reset();
+        } catch (error) {
+          statusElement.innerHTML = `
+            <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <p>
+                  <strong>Error sending message</strong><br>
+                  <span class="text-sm">${error.message || 'Please try again later or contact us directly at ' + recipientEmail}</span>
+                </p>
+              </div>
+            </div>
+          `;
+          statusElement.classList.remove('hidden');
+        } finally {
+          // Reset button state
+          submitButton.disabled = false;
+          submitButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+            Send Message
+          `;
+        }
+      });
+    </script>
+  
+
+
+    <!-- Footer -->
+    <footer class="text-gray-600 body-font bg-white border-t border-gray-200">
+      <div class="container px-5 py-8 mx-auto flex items-center sm:flex-row flex-col">
+        <a href="{% url 'landing_page' %}" class="flex title-font font-medium items-center md:justify-start justify-center text-gray-900">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-yellow-500 rounded-full" viewBox="0 0 24 24">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
+          </svg>
+          <span class="ml-3 text-xl">AyurGenix AI</span>
+        </a>
+        <p class="text-sm text-gray-500 sm:ml-4 sm:pl-4 sm:border-l-2 sm:border-gray-200 sm:py-2 sm:mt-0 mt-4">
+          © 2025 AyurGenix AI — All rights reserved.
+        </p>
+      </div>
+    </footer>
+
+    <!-- Mobile Menu Script -->
+    <script>
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById('mobile-menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+
+      if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+    </script>
+  </body>
+  </html>

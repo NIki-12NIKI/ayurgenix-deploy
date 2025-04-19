@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 40px;
+        }
+        .container {
+            max-width: 800px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            width: 100%;
+        }
+        .profile-picture {
+            display: block;
+            margin: 10px auto;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        .section-heading {
+            background-color: #f0f0f0;
+            padding: 10px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2 class="text-center">Edit Profile</h2>
+        
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <!-- Display validation errors -->
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field|title }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <!-- Profile Picture Section -->
+            <div class="text-center">
+                {% if user.userprofile.profile_picture %}
+                    <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile Picture" class="profile-picture">
+                {% else %}
+                    <img src="https://via.placeholder.com/100" alt="Default Profile Picture" class="profile-picture">
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="id_profile_picture">Change Profile Picture</label>
+                <input type="file" name="profile_picture" id="id_profile_picture" class="form-control">
+            </div>
+
+            <!-- Personal Information Section -->
+            <h4 class="section-heading">Personal Information</h4>
+            
+            <!-- First Name -->
+            <div class="form-group">
+                <label for="id_first_name">First Name</label>
+                <input type="text" name="first_name" id="id_first_name" class="form-control" value="{{ user.userprofile.first_name }}">
+            </div>
+
+            <!-- Last Name -->
+            <div class="form-group">
+                <label for="id_last_name">Last Name</label>
+                <input type="text" name="last_name" id="id_last_name" class="form-control" value="{{ user.userprofile.last_name }}">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="id_email">Email</label>
+                <input type="email" name="email" id="id_email" class="form-control" value="{{ user.email }}" readonly>
+            </div>
+
+            <!-- Gender -->
+            <div class="form-group">
+                <label for="id_gender">Gender</label>
+                <select name="gender" id="id_gender" class="form-control">
+                    <option value="">Select Gender</option>
+                    <option value="Male" {% if user.userprofile.gender == "Male" %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if user.userprofile.gender == "Female" %}selected{% endif %}>Female</option>
+                    <option value="Other" {% if user.userprofile.gender == "Other" %}selected{% endif %}>Other</option>
+                </select>
+            </div>
+
+            <!-- Birth Year -->
+            <div class="form-group">
+                <label for="id_birth_year">Birth Year</label>
+                <input type="number" name="birth_year" id="id_birth_year" class="form-control" value="{{ user.userprofile.birth_year }}">
+            </div>
+
+            <!-- Height -->
+            <div class="form-group">
+                <label for="id_height">Height (cm)</label>
+                <input type="number" step="0.01" name="height" id="id_height" class="form-control" value="{{ user.userprofile.height }}">
+            </div>
+
+            <!-- Weight -->
+            <div class="form-group">
+                <label for="id_weight">Weight (kg)</label>
+                <input type="number" step="0.01" name="weight" id="id_weight" class="form-control" value="{{ user.userprofile.weight }}">
+            </div>
+
+            <!-- Blood Group -->
+            <div class="form-group">
+                <label for="id_blood_group">Blood Group</label>
+                <select name="blood_group" id="id_blood_group" class="form-control">
+                    <option value="">Select Blood Group</option>
+                    {% for group, display in form.fields.blood_group.choices %}
+                        <option value="{{ group }}" {% if user.userprofile.blood_group == group %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Medical History -->
+            <div class="form-group">
+                <label for="id_medical_history">Medical History</label>
+                <textarea name="medical_history" id="id_medical_history" class="form-control" rows="3">{{ user.userprofile.medical_history }}</textarea>
+            </div>
+
+            <!-- Allergies -->
+            <div class="form-group">
+                <label for="id_allergies">Allergies</label>
+                <textarea name="allergies" id="id_allergies" class="form-control" rows="3">{{ user.userprofile.allergies }}</textarea>
+            </div>
+
+            <!-- Dosha Type -->
+            <div class="form-group">
+                <label for="id_dosha_type">Dosha Type</label>
+                <select name="dosha_type" id="id_dosha_type" class="form-control">
+                    <option value="">Select Dosha Type</option>
+                    {% for value, display in form.fields.dosha_type.choices %}
+                        <option value="{{ value }}" {% if user.userprofile.dosha_type == value %}selected{% endif %}>{{ display }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Save Button -->
+            <button type="submit" class="btn btn-primary mt-4">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        // Calculate BMI whenever height or weight changes
+        document.addEventListener('DOMContentLoaded', function() {
+            const heightInput = document.getElementById('id_height');
+            const weightInput = document.getElementById('id_weight');
+            const bmiInput = document.getElementById('id_bmi');
+            
+            function calculateBMI() {
+                if (heightInput.value && weightInput.value) {
+                    const height = parseFloat(heightInput.value) / 100; // convert cm to meters
+                    const weight = parseFloat(weightInput.value);
+                    const bmi = weight / (height * height);
+                    bmiInput.value = bmi.toFixed(2);
+                }
+            }
+            
+            heightInput.addEventListener('input', calculateBMI);
+            weightInput.addEventListener('input', calculateBMI);
+        });
+    </script>
+</body>
+</html>
