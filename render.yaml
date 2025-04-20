@@ -16,6 +16,11 @@ services:
         value: your-generated-secret-key
       - key: DEBUG
         value: "False"
+      - key: MODEL_PATH
+        value: "tiiuae/falcon-rw-1b" 
+        
+        
+    
       - key: ALLOWED_HOSTS
         value: ayurgenix-service.onrender.com
     plan: free
