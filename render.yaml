@@ -1,8 +1,21 @@
 services:
   - type: web
-    name: ayurgenix-api
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn app.main:app --host 0.0.0.0 --port 8000
+    name: ayurgenix-service
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py migrate --noinput
+      python manage.py collectstatic --noinput
+    startCommand: uvicorn ayurgenix.asgi:application --host 0.0.0.0 --port 10000
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: ayurgenix-db
+          property: connectionString
+      - key: DJANGO_SECRET_KEY
+        value: your-generated-secret-key
+      - key: DEBUG
+        value: "False"
+      - key: ALLOWED_HOSTS
+        value: ayurgenix-service.onrender.com
     plan: free
-    autoDeploy: true

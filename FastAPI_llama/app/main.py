@@ -1,6 +1,6 @@
 from fastapi import FastAPI, Request
 from pydantic import BaseModel
-from app.model import generate_ayurvedic_response
+from .model import generate_ayurvedic_response  # Now uses correct relative import
 
 app = FastAPI()
 

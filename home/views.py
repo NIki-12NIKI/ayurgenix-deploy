@@ -12,6 +12,18 @@ from .models import UserProfile, ChatConversation
 from .forms import UserProfileForm, ProfileEditForm
 from .llm_utils import  generate_ayurvedic_response
 
+from django.http import JsonResponse
+from FastAPI_llama.app.model import generate_ayurvedic_response
+
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+
+@login_required
+def secure_view(request):
+    return JsonResponse({'message': 'You are authenticated!'})
+
+
+
 # Landing Page
 def landing_page(request):
     return render(request, 'home/landing_page.html')
@@ -46,6 +58,7 @@ def after_login_redirect(request):
         return redirect('make_profile')  # Redirect new users to complete profile
 
     return redirect('dashboard')  # Redirect to dashboard if profile is complete
+@login_required
 
 def register_view(request):
     if request.method == "POST":
@@ -123,6 +136,16 @@ def make_profile(request):
         form = UserProfileForm(instance=user_profile, initial=initial_data)
 
     return render(request, 'profile/make_profile.html', {'form': form})
+
+
+@login_required
+def ai_response_view(request):
+    user_input = request.GET.get('query', '')
+    if not user_input:
+        return JsonResponse({'error': 'No input provided'}, status=400)
+
+    result = generate_ayurvedic_response(user_input)
+    return JsonResponse({'response': result})
 
 @login_required
 def edit_profile(request):

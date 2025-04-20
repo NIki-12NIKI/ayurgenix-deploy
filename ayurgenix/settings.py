@@ -10,7 +10,7 @@ https://docs.djangoproject.com/en/5.1/topics/settings/
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-
+import dj_database_url
 
 
 
@@ -23,15 +23,24 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "your-default-secret-key")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "True") == "True"
+DEBUG = os.getenv("DEBUG", "False") == "False"
 
 # Allowed Hosts
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "127.0.0.1,localhost").split(",")
+
+# settings.py
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
 
 # CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1",
     "http://localhost",
+    "https://*.onrender.com", 
     # Add your domain if in production
     # "https://yourdomain.com"
 ]
@@ -43,12 +52,14 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    'whitenoise.runserver_nostatic',  # For static files on Render
     "django.contrib.staticfiles",
     "home",  # Your main app
 ]
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Add this
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -80,16 +91,15 @@ WSGI_APPLICATION = "ayurgenix.wsgi.application"
 
 # Database Configuration (PostgreSQL)
 # Database Configuration (PostgreSQL)
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ayurgenix',
-        'USER': 'postgres',
-        'PASSWORD': 'NIKIta12@#',
-        'HOST': 'localhost',
-        'PORT': '5432'
-    }
+    'default': dj_database_url.config(
+        default=os.getenv('DATABASE_URL'),
+        conn_max_age=600  # Recommended for Render
+    )
 }
+
+
 
 # Password Validators
 AUTH_PASSWORD_VALIDATORS = [
@@ -104,10 +114,12 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
-
-# Static & Media Files
-STATIC_URL = "/static/"
-STATICFILES_DIRS = [BASE_DIR / "static"]
+# Add these settings at the bottom of settings.py
+# Static files (Render-specific configuration)
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Crucial for Render
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'  # For performance
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
 
@@ -133,3 +145,12 @@ LOGGING = {
         },
     },
 }
+# Add these new settings for Render optimization
+WHITENOISE_MAX_AGE = 31536000  # 1 year cache for static files
+DATA_UPLOAD_MAX_MEMORY_SIZE = 10485760  # 10MB upload limit
+X_FRAME_OPTIONS = 'DENY'
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# For ASGI deployment (FastAPI + Django)
+ASGI_APPLICATION = 'ayurgenix.asgi.application'
