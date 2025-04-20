@@ -8,8 +8,9 @@ from transformers import BitsAndBytesConfig
 torch.cuda.empty_cache()
 
 # Relative path for model and dataset
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH = os.path.join(BASE_DIR, "AyurGenixAI_Dataset.csv")  # File must be placed in the same folder or adjust path
+
+BASE_DIR = os.path.dirname(__file__)
+DATASET_PATH = os.path.join(BASE_DIR, 'AyurGenixAI_Dataset.csv') # File must be placed in the same folder or adjust path
 
 # Load dataset
 data = pd.read_csv(DATASET_PATH)
