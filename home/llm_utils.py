@@ -2,58 +2,52 @@ from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 import torch
 import pandas as pd
 import os
-from transformers import BitsAndBytesConfig
 
-# Free GPU Memory Before Running
+# Optional GPU cache clearance
 torch.cuda.empty_cache()
 
-# Relative path for model and dataset
+# Dataset path
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH = os.path.join(BASE_DIR, "AyurGenixAI_Dataset.csv")  # File must be placed in the same folder or adjust path
+DATASET_PATH = os.path.join(BASE_DIR, "AyurGenixAI_Dataset.csv")
 
-# Load dataset
+# Load dataset once
 data = pd.read_csv(DATASET_PATH)
 
-# Path to model (local or cloud bucket) – Update this for Render if needed
-# MODEL_PATH = os.getenv("MODEL_PATH", "llama1B")  # Add env var in Render dashboard or mount model path
-# Path to a valid public HF model
-MODEL_PATH = os.getenv("MODEL_PATH", "sshleifer/tiny-gpt2")
- # Safe fallback if not set
+# Lazy-load model/tokenizer
+_model = None
+_tokenizer = None
+_pipe = None
 
-# Check if using quantization is supported (Falcon works better in float32 or float16)
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_PATH,
-    torch_dtype=torch.float16,
-    device_map="auto"
-)
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+def get_model_and_tokenizer():
+    global _model, _tokenizer
+    if _model is None or _tokenizer is None:
+        model_path = os.getenv("MODEL_PATH", "sshleifer/tiny-gpt2")
+        _model = AutoModelForCausalLM.from_pretrained(model_path)
+        _tokenizer = AutoTokenizer.from_pretrained(model_path)
+    return _model, _tokenizer
 
-
-# Configure 8-bit quantization
-#bnb_config = BitsAndBytesConfig(load_in_8bit=True)
-
-
-
-# Initialize pipeline
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
+def get_pipeline():
+    global _pipe
+    if _pipe is None:
+        model, tokenizer = get_model_and_tokenizer()
+        _pipe = pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer
+        )
+    return _pipe
 
 def retrieve_relevant_data(user_input, data):
-    """Filter dataset for matching symptoms."""
     relevant_rows = data[data["Symptoms"].str.contains(user_input, case=False, na=False)]
-   
     if relevant_rows.empty:
         return "No match found in dataset. Proceeding with Ayurvedic knowledge."
-
     return "\n".join(
         f"Symptom: {row['Symptoms']}, Disease: {row['Disease']}, Remedies: {row['Herbal/Alternative Remedies']}"
         for _, row in relevant_rows.iterrows()
     )
 
 def generate_ayurvedic_response(user_input):
-    """Generate an Ayurvedic health report using LLaMA."""
     filtered_context = retrieve_relevant_data(user_input, data)
-
-    # Improved prompt structure
     input_prompt = f"""### Task Description:
 You are an experienced Ayurvedic practitioner analyzing symptoms to create a health report. Use the following context and strictly follow the output format:
 
@@ -87,9 +81,9 @@ You are an experienced Ayurvedic practitioner analyzing symptoms to create a hea
 ### Response:
 Based on the symptoms "{user_input}", here is the Ayurvedic health report:
 
-1. Disease: """  # The model will continue from here
+1. Disease: """  # The model continues from here
 
-    # Generate response with controlled length
+    pipe = get_pipeline()
     response = pipe(
         input_prompt,
         max_new_tokens=1000,
@@ -97,18 +91,12 @@ Based on the symptoms "{user_input}", here is the Ayurvedic health report:
         top_k=50,
         do_sample=True,
         num_return_sequences=1,
-        eos_token_id=tokenizer.eos_token_id,
-        pad_token_id=tokenizer.eos_token_id
+        eos_token_id=_tokenizer.eos_token_id,
+        pad_token_id=_tokenizer.eos_token_id
     )
 
-    # Extract and clean the response
     full_response = response[0]["generated_text"]
-    
-    # Remove the input prompt from the response
     cleaned_response = full_response.replace(input_prompt, "").strip()
-    
-    # Further clean if needed (remove any trailing instructions)
     if "###" in cleaned_response:
         cleaned_response = cleaned_response.split("###")[0].strip()
-    
     return cleaned_response

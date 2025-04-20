@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
+
 # Import models consistently from the local app
 from .models import UserProfile, ChatConversation
 from .forms import UserProfileForm, ProfileEditForm
@@ -98,6 +99,14 @@ def register_view(request):
 def logout_view(request):
     logout(request)
     return redirect('landing_page')
+
+@login_required
+def predict_view(request):
+    if request.method == "POST":
+        user_input = request.POST.get("symptom")
+        prediction = generate_ayurvedic_response(user_input)
+        return render(request, "result.html", {"response": prediction})
+
 
 # Profile Management
 @login_required

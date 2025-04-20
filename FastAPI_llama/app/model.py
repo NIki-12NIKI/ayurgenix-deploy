@@ -1,54 +1,57 @@
+# model.py
+
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 import torch
 import pandas as pd
 import os
-from transformers import BitsAndBytesConfig
 
-# Free GPU Memory Before Running
+# Optional: Free GPU memory
 torch.cuda.empty_cache()
 
-# Relative path for model and dataset
+# Path setup
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATASET_PATH = os.path.join(BASE_DIR, "AyurGenixAI_Dataset.csv")
 
-BASE_DIR = os.path.dirname(__file__)
-DATASET_PATH = os.path.join(BASE_DIR, 'AyurGenixAI_Dataset.csv') # File must be placed in the same folder or adjust path
-
-# Load dataset
+# Load dataset once
 data = pd.read_csv(DATASET_PATH)
 
-# Path to model (local or cloud bucket) – Update this for Render if needed
-# MODEL_PATH = os.getenv("MODEL_PATH", "llama1B")  # Add env var in Render dashboard or mount model path
-# Path to a valid public HF model
-MODEL_PATH = os.getenv("MODEL_PATH", "sshleifer/tiny-gpt2")
+# Lazy-load globals
+_model = None
+_tokenizer = None
+_pipe = None
 
-# Check if using quantization is supported (Falcon works better in float32 or float16)
-model = AutoModelForCausalLM.from_pretrained(
-    MODEL_PATH,
-    torch_dtype=torch.float16,
-    device_map="auto"
-)
-tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
+def get_model_and_tokenizer():
+    global _model, _tokenizer
+    if _model is None or _tokenizer is None:
+        model_path = os.getenv("MODEL_PATH", "sshleifer/tiny-gpt2")
+        _model = AutoModelForCausalLM.from_pretrained(model_path)
+        _tokenizer = AutoTokenizer.from_pretrained(model_path)
+    return _model, _tokenizer
 
-# Initialize pipeline
-pipe = pipeline("text-generation", model=model, tokenizer=tokenizer)
+def get_pipeline():
+    global _pipe
+    if _pipe is None:
+        model, tokenizer = get_model_and_tokenizer()
+        _pipe = pipeline(
+            "text-generation",
+            model=model,
+            tokenizer=tokenizer
+        )
+    return _pipe
 
-def retrieve_relevant_data(user_input, data):
-    """Filter dataset for matching symptoms."""
+def retrieve_relevant_data(user_input):
     relevant_rows = data[data["Symptoms"].str.contains(user_input, case=False, na=False)]
-   
     if relevant_rows.empty:
         return "No match found in dataset. Proceeding with Ayurvedic knowledge."
-
     return "\n".join(
         f"Symptom: {row['Symptoms']}, Disease: {row['Disease']}, Remedies: {row['Herbal/Alternative Remedies']}"
         for _, row in relevant_rows.iterrows()
     )
 
-
 def generate_ayurvedic_response(user_input):
-    try:
-        filtered_context = retrieve_relevant_data(user_input, data)
+    filtered_context = retrieve_relevant_data(user_input)
 
-        input_prompt = f"""### Task Description:
+    input_prompt = f"""### Task Description:
 You are an experienced Ayurvedic practitioner analyzing symptoms to create a health report. Use the following context and strictly follow the output format:
 
 ### Context:
@@ -72,7 +75,7 @@ You are an experienced Ayurvedic practitioner analyzing symptoms to create a hea
 15. Prognosis: [Outlook]
 16. Complications: [Risks]
 17. Patient Recommendations: [Actionable steps]
-### End of Report.
+
 ### Ayurvedic Principles:
 - Use simple language
 - Root recommendations in Ayurveda
@@ -81,29 +84,24 @@ You are an experienced Ayurvedic practitioner analyzing symptoms to create a hea
 ### Response:
 Based on the symptoms "{user_input}", here is the Ayurvedic health report:
 
-1. Disease: """  # The model will continue from here
+1. Disease: """
 
-        response = pipe(
-            input_prompt,
-            max_new_tokens=1000,
-            temperature=0.7,
-            top_k=50,
-            do_sample=True,
-            num_return_sequences=1,
-            eos_token_id=tokenizer.eos_token_id,
-            pad_token_id=tokenizer.eos_token_id
-        )
+    pipe = get_pipeline()
+    tokenizer = get_model_and_tokenizer()[1]
+    
+    response = pipe(
+        input_prompt,
+        max_new_tokens=1000,
+        temperature=0.7,
+        top_k=50,
+        do_sample=True,
+        num_return_sequences=1,
+        eos_token_id=tokenizer.eos_token_id,
+        pad_token_id=tokenizer.eos_token_id
+    )
 
-        full_response = response[0]["generated_text"]
-        cleaned_response = full_response.replace(input_prompt, "").strip()
-        
-        if "### End of Report." in cleaned_response:
-            cleaned_response = cleaned_response.split("### End of Report.")[0].strip()
-        return cleaned_response
-
-    except Exception as e:
-        return f"💥 Error during generation: {str(e)}"
-
-
-
-
+    full_response = response[0]["generated_text"]
+    cleaned_response = full_response.replace(input_prompt, "").strip()
+    if "###" in cleaned_response:
+        cleaned_response = cleaned_response.split("###")[0].strip()
+    return cleaned_response
