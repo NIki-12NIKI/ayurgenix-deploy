@@ -2,7 +2,6 @@ import os
 from django.core.asgi import get_asgi_application
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ayurgenix.settings')
@@ -10,19 +9,19 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ayurgenix.settings')
 # Initialize Django ASGI application
 django_app = get_asgi_application()
 
-# Create combined application
+# Create FastAPI application
 application = FastAPI(
     middleware=[
-        Middleware(
-            CORSMiddleware,
-            allow_origins=["*"],
-            allow_methods=["*"],
-            allow_headers=["*"],
+        # Add CORSMiddleware to handle CORS
+        CORSMiddleware(
+            allow_origins=["*"],  # Allows all origins, adjust based on your use case
+            allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
+            allow_headers=["*"],  # Allows all headers
         )
     ]
 )
-application = FastAPI()
-# Mount applications
+
+# Mount the Django app under the root path ("/")
 application.mount("/", WSGIMiddleware(django_app))
 
 # Import and mount FastAPI app (ensure this path is correct)
