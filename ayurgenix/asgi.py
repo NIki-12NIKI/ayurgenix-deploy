@@ -2,7 +2,7 @@ import os
 from django.core.asgi import get_asgi_application
 from fastapi import FastAPI
 from fastapi.middleware.wsgi import WSGIMiddleware
-from starlette.middleware.cors import CORSMiddleware
+from fastapi.middleware.cors import CORSMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ayurgenix.settings')
 
@@ -10,21 +10,20 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ayurgenix.settings')
 django_app = get_asgi_application()
 
 # Create FastAPI application
-application = FastAPI(
-    middleware=[
-        # Add CORSMiddleware to handle CORS
-        CORSMiddleware(
-            allow_origins=["*"],  # Allows all origins, adjust based on your use case
-            allow_methods=["*"],  # Allows all methods (GET, POST, etc.)
-            allow_headers=["*"],  # Allows all headers
-        )
-    ]
+application = FastAPI()
+
+# Add CORS middleware
+application.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
-# Mount the Django app under the root path ("/")
+# Mount Django app at root
 application.mount("/", WSGIMiddleware(django_app))
 
-# Import and mount FastAPI app (ensure this path is correct)
+# Mount FastAPI LLaMA app at /api/llama
 try:
     from FastAPI_llama.app.main import app as fastapi_app
     application.mount("/api/llama", fastapi_app)
