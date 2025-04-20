@@ -1,32 +1,32 @@
+# ayurgenix/asgi.py
+
 import os
+import django
 from django.core.asgi import get_asgi_application
 from fastapi import FastAPI
-from fastapi.middleware.wsgi import WSGIMiddleware
-from fastapi.middleware.cors import CORSMiddleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.wsgi import WSGIMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ayurgenix.settings')
+django.setup()
 
 # Initialize Django ASGI application
-django_app = get_asgi_application()
+django_asgi_app = get_asgi_application()
 
-# Create FastAPI application
-application = FastAPI()
+# Initialize FastAPI
+fastapi_app = FastAPI()
 
-# Add CORS middleware
-application.add_middleware(
+# Optional: Add routes, middleware to FastAPI
+fastapi_app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
+    allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount Django app at root
-application.mount("/", WSGIMiddleware(django_app))
+# Mount Django inside FastAPI
+fastapi_app.mount("/", WSGIMiddleware(django_asgi_app))
 
-# Mount FastAPI LLaMA app at /api/llama
-try:
-    from FastAPI_llama.app.main import app as fastapi_app
-    application.mount("/api/llama", fastapi_app)
-except ImportError as e:
-    import logging
-    logging.warning(f"Failed to import FastAPI app: {e}")
+# Final app to serve
+application = fastapi_app
