@@ -18,7 +18,7 @@ data = pd.read_csv(DATASET_PATH)
 # Path to model (local or cloud bucket) – Update this for Render if needed
 # MODEL_PATH = os.getenv("MODEL_PATH", "llama1B")  # Add env var in Render dashboard or mount model path
 # Path to a valid public HF model
-MODEL_PATH = os.getenv("MODEL_PATH", "tiiuae/falcon-rw-1b")  # Safe fallback if not set
+MODEL_PATH = os.getenv("MODEL_PATH", "sshleifer/tiny-gpt2")
 
 # Check if using quantization is supported (Falcon works better in float32 or float16)
 model = AutoModelForCausalLM.from_pretrained(

@@ -17,7 +17,8 @@ services:
       - key: DEBUG
         value: "False"
       - key: MODEL_PATH
-        value: "tiiuae/falcon-rw-1b" 
+        value: sshleifer/tiny-gpt2
+
         
         
     
