@@ -1,27 +1,29 @@
 from transformers import pipeline, AutoModelForCausalLM, AutoTokenizer
 import torch
 import pandas as pd
+import os
 from transformers import BitsAndBytesConfig
 
 # Free GPU Memory Before Running
 torch.cuda.empty_cache()
 
-# Path to the model
-MODEL_PATH = "C:\\codes\\llama1B\\"
-DATASET_PATH = "C:\\codes\\llama1B\\AyurGenixAI_Dataset.csv"
+# Relative path for model and dataset
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATASET_PATH = os.path.join(BASE_DIR, "AyurGenixAI_Dataset.csv")  # File must be placed in the same folder or adjust path
 
 # Load dataset
 data = pd.read_csv(DATASET_PATH)
 
-# Configure 8-bit quantization
-bnb_config = BitsAndBytesConfig(load_in_8bit=True)
+# Path to model (local or cloud bucket) – Update this for Render if needed
+# MODEL_PATH = os.getenv("MODEL_PATH", "llama1B")  # Add env var in Render dashboard or mount model path
+# Path to a valid public HF model
+MODEL_PATH = os.getenv("MODEL_PATH", "tiiuae/falcon-rw-1b")  # Safe fallback if not set
 
-# Load model and tokenizer once
+# Check if using quantization is supported (Falcon works better in float32 or float16)
 model = AutoModelForCausalLM.from_pretrained(
     MODEL_PATH,
     torch_dtype=torch.float16,
-    device_map="auto",
-    quantization_config=bnb_config
+    device_map="auto"
 )
 tokenizer = AutoTokenizer.from_pretrained(MODEL_PATH)
 
