@@ -59,7 +59,6 @@ def after_login_redirect(request):
         return redirect('make_profile')  # Redirect new users to complete profile
 
     return redirect('dashboard')  # Redirect to dashboard if profile is complete
-@login_required
 
 def register_view(request):
     if request.method == "POST":
