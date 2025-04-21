@@ -6,7 +6,8 @@ services:
       pip install -r requirements.txt
       python manage.py migrate --noinput
       python manage.py collectstatic --noinput
-    startCommand: uvicorn ayurgenix.asgi:application --host 0.0.0.0 --port 10000
+    startCommand: uvicorn ayurgenix.asgi:application --host 0.0.0.0 --port $PORT
+
     envVars:
       - key: DATABASE_URL
         fromDatabase:
