@@ -5,7 +5,6 @@ import django
 from django.core.asgi import get_asgi_application
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
-from starlette.middleware.wsgi import WSGIMiddleware
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ayurgenix.settings')
 django.setup()
@@ -25,8 +24,11 @@ fastapi_app.add_middleware(
     allow_headers=["*"],
 )
 
-# Mount Django inside FastAPI
-fastapi_app.mount("/", WSGIMiddleware(django_asgi_app))
+# Mount Django ASGI app properly
+# Option 1: Use the Django ASGI app directly
+application = django_asgi_app
 
-# Final app to serve
-application = fastapi_app
+# Option 2: If you need both FastAPI and Django, use this approach instead:
+# from fastapi.middleware.asgi import ASGIMiddleware
+# fastapi_app.mount("/", ASGIMiddleware(django_asgi_app))
+# application = fastapi_app
